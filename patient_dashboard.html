@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ patient.name }}</h1>
+        <div class="nav-links">
+            <a href="{{ url_for('book_appointment') }}">Book Appointment</a>
+            <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        <h2>Your Appointments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Date</th>
+                    <th>Doctor</th>
+                    <th>Treatment Details</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.appointment_date }}</td>
+                    <td>{{ appointment.doctor_name }}</td>
+                    <td>{{ appointment.treatment_details or 'N/A' }}</td>
+                    <td>{{ appointment.status }}</td>
+                    <td><a href="{{ url_for('download_invoice', appointment_id=appointment.id) }}">Download Invoice</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

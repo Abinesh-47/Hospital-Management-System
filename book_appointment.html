@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        function fetchTimeSlots() {
+            const doctorId = document.getElementById('doctor_id').value;
+            const appointmentDate = document.getElementById('appointment_date').value;
+            if (doctorId && appointmentDate) {
+                window.location.href = `{{ url_for('book_appointment') }}?doctor_id=${doctorId}&appointment_date=${appointmentDate}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container center-form">
+        <div class="form-container">
+            <h1>Book Appointment</h1>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <form method="POST" action="{{ url_for('book_appointment') }}">
+                <label for="doctor_id">Doctor</label>
+                <select id="doctor_id" name="doctor_id" onchange="fetchTimeSlots()" required>
+                    <option value="">Select a Doctor</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}" {% if doctor.id|string == request.args.get('doctor_id') %}selected{% endif %}>
+                        {{ doctor.name }} ({{ doctor.specialty }})
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <label for="appointment_date">Date</label>
+                <input type="date" id="appointment_date" name="appointment_date" value="{{ selected_date or '' }}" onchange="fetchTimeSlots()" required>
+
+                <label for="appointment_time">Time Slot</label>
+                <select id="appointment_time" name="appointment_time" required>
+                    <option value="">Select a Time Slot</option>
+                    {% for slot in available_slots %}
+                    <option value="{{ slot }}">{{ slot }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="treatment_details">Treatment Details</label>
+                <textarea id="treatment_details" name="treatment_details" placeholder="Describe your issue"></textarea>
+
+                <input type="submit" value="Book Appointment">
+            </form>
+            <div class="nav-links">
+                <a href="{{ url_for('patient_dashboard') }}">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
